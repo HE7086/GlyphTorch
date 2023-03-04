@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="glyph_toggle"
+        android:enabled="true"
+        android:icon="@drawable/baseline_lightbulb_24"
+        android:shortcutShortLabel="@string/shortcut_label">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.heyi7086.glyphtorch"
+            android:targetClass="com.heyi7086.glyphtorch.GlyphToggleActivity" />
+        <categories android:name="android.shortcut.conversation" />
+        <capability-binding android:key="actions.intent.CREATE_MESSAGE" />
+    </shortcut>
+</shortcuts>
