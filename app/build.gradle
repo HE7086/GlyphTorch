@@ -31,7 +31,7 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = '1.8'
     }
     buildFeatures {
         compose true
@@ -48,6 +48,8 @@ android {
 
 dependencies {
 
+    implementation platform('androidx.compose:compose-bom:2022.10.00')
+    androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
     def libsuVersion = '5.0.4'
     implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
     implementation "com.github.topjohnwu.libsu:service:${libsuVersion}"

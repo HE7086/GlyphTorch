@@ -17,9 +17,21 @@
             android:theme="@style/Theme.GlyphTorch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+        <service
+            android:name=".GlyphTileService"
+            android:label="@string/GlyphTileLabel"
+            android:icon="@drawable/baseline_lightbulb_24"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+</application>
 
 </manifest>

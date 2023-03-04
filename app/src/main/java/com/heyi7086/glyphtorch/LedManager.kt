@@ -19,4 +19,13 @@ object LedManager {
         val result = Shell.cmd("cat $BRIGHT2").exec()
         return result.out.last().toInt()
     }
+
+    fun toggle() {
+        val brightness = getBrightness()
+        if (brightness == 0) {
+            setBrightness(255)
+        } else {
+            setBrightness(0)
+        }
+    }
 }
