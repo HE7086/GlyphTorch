@@ -2,10 +2,10 @@ package com.heyi7086.glyphtorch
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -56,6 +56,17 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+
+        val brand = android.os.Build.BRAND
+        val model = android.os.Build.MODEL
+        // are there any other models?
+        if (brand != "Nothing" || model != "A063") {
+            Toast.makeText(this,
+                "It seems that you are not using Nothing Phone (1).\n" +
+                        "This app will unlikely to work.",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
