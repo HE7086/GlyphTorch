@@ -26,7 +26,14 @@
         <activity
             android:name=".GlyphToggleActivity"
             android:exported="true"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
             android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.RUN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="glyph" />
+            </intent-filter>
         </activity>
         <service
             android:name=".GlyphTileService"
