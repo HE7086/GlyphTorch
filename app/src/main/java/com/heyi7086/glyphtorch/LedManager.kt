@@ -20,12 +20,14 @@ object LedManager {
         return result.out.last().toInt()
     }
 
-    fun toggle() {
+    fun toggle(): Boolean {
         val brightness = getBrightness()
-        if (brightness == 0) {
+        return if (brightness == 0) {
             setBrightness(255)
+            true
         } else {
             setBrightness(0)
+            false
         }
     }
 }
