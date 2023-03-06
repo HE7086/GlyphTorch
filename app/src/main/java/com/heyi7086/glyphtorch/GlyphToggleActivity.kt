@@ -8,6 +8,8 @@ class GlyphToggleActivity: Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        led.toggle()
+        val result = led.toggle()
+        Log.d("GlyphTorch", "Glyph toggled: $result")
+        finish()
     }
 }
