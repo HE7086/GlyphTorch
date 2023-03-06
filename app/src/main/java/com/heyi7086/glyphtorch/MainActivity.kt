@@ -83,7 +83,6 @@ class MainActivity : ComponentActivity() {
         Slider(
             value = sliderValue,
             valueRange = 0f..255f,
-            steps = 10,
             onValueChange = {
                 sliderValue = it
                 brightness = it
