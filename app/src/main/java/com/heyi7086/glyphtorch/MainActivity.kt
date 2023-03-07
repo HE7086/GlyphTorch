@@ -1,5 +1,9 @@
 package com.heyi7086.glyphtorch
 
+import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.Camera
+import android.hardware.camera2.CameraManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -133,6 +137,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     BrightnessSlider(Modifier.padding(horizontal = 16.dp))
                     ActivateButton()
+                    FlashLightButton()
                 }
             }
         )
@@ -197,9 +202,46 @@ class MainActivity : ComponentActivity() {
                 Modifier.size(40.dp)
             )
             Text(
-                text = "Torch",
+                text = "Glyph",
                 fontSize = 40.sp
             )
+        }
+    }
+
+    @Composable
+    fun FlashLightButton(modifier: Modifier = Modifier) {
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+            var flag by remember {
+                mutableStateOf(false)
+            }
+            Button(
+                onClick = {
+                    flag = !flag
+                    getSystemService(Context.CAMERA_SERVICE)?.let {
+                        val cameraManager = it as CameraManager
+                        val cameraId = cameraManager.cameraIdList[0]
+                        cameraManager.setTorchMode(cameraId, flag)
+                    }
+                    Log.d("GlyphTorch", "Flashlight clicked $flag")
+                },
+                shape = RoundedCornerShape(10),
+            ) {
+                Icon(
+                    painter = rememberVectorPainter(
+                        image = if (flag) {
+                            Icons.Default.Check
+                        } else {
+                            Icons.Default.Clear
+                        }
+                    ),
+                    contentDescription = "Flashlight Status",
+                    Modifier.size(40.dp)
+                )
+                Text(
+                    text = "Flashlight",
+                    fontSize = 40.sp
+                )
+            }
         }
     }
 }
