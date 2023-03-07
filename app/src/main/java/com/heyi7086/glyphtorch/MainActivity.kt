@@ -48,7 +48,7 @@ import com.topjohnwu.superuser.Shell
 class MainActivity : ComponentActivity() {
 
     init {
-        Shell.enableVerboseLogging = true
+        Shell.enableVerboseLogging = BuildConfig.DEBUG
         Shell.getShell()
     }
 
