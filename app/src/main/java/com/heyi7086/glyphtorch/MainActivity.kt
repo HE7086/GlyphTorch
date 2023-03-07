@@ -2,7 +2,6 @@ package com.heyi7086.glyphtorch
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Camera
 import android.hardware.camera2.CameraManager
 import android.os.Bundle
 import android.util.Log
@@ -16,11 +15,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -136,8 +135,8 @@ class MainActivity : ComponentActivity() {
                     verticalArrangement = Arrangement.spacedBy(32.dp)
                 ) {
                     BrightnessSlider(Modifier.padding(horizontal = 16.dp))
-                    ActivateButton()
-                    FlashLightButton()
+                    ActivateButton(Modifier.width(300.dp))
+                    FlashLightButton(Modifier.width(300.dp))
                 }
             }
         )
@@ -215,6 +214,7 @@ class MainActivity : ComponentActivity() {
                 mutableStateOf(false)
             }
             Button(
+                modifier = modifier,
                 onClick = {
                     flag = !flag
                     getSystemService(Context.CAMERA_SERVICE)?.let {
