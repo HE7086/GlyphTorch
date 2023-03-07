@@ -128,9 +128,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(it),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(32.dp)
                 ) {
-                    BrightnessSlider(Modifier.padding(16.dp))
+                    BrightnessSlider(Modifier.padding(horizontal = 16.dp))
                     ActivateButton()
                 }
             }
@@ -142,21 +143,26 @@ class MainActivity : ComponentActivity() {
         var sliderValue by remember {
             mutableStateOf(brightness)
         }
-        Slider(
-            value = sliderValue,
-            valueRange = 0f..255f,
-            onValueChange = {
-                sliderValue = it
-                brightness = it
-                if (glyphOn) {
-                    led.setBrightness(brightness.toInt())
-                }
-            },
-            onValueChangeFinished = {
-                Log.d("GlyphTorch", "Slider changed $brightness")
-            },
-            modifier = modifier
-        )
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Slider(
+                value = sliderValue,
+                valueRange = 0f..255f,
+                onValueChange = {
+                    sliderValue = it
+                    brightness = it
+                    if (glyphOn) {
+                        led.setBrightness(brightness.toInt())
+                    }
+                },
+                onValueChangeFinished = {
+                    Log.d("GlyphTorch", "Slider changed $brightness")
+                },
+                modifier = modifier
+            )
+            Text("Brightness: ${brightness.toInt()}")
+        }
     }
 
     @Composable
