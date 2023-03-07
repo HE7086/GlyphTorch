@@ -63,8 +63,7 @@ class MainActivity : ComponentActivity() {
         // are there any other models?
         if (brand != "Nothing" || model != "A063") {
             Toast.makeText(this,
-                "It seems that you are not using Nothing Phone (1).\n" +
-                        "This app will unlikely to work.",
+                "It seems that you are not using Nothing Phone (1)",
                 Toast.LENGTH_LONG
             ).show()
         }
