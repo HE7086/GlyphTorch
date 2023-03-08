@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -40,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -106,6 +109,79 @@ class MainActivity : ComponentActivity() {
 
         val buttonWidth = Modifier.width(300.dp)
 
+        @Composable
+        fun BrightnessSlider(modifier: Modifier = Modifier) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Slider(
+                    value = sliderValue,
+                    valueRange = 0f..255f,
+                    onValueChange = {
+                        sliderValue = it
+                        brightness = it
+                        if (glyphOn) {
+                            led.setBrightness(brightness.toInt())
+                        }
+                    },
+                    onValueChangeFinished = {
+                        Log.d("GlyphTorch", "Slider changed $brightness")
+                    },
+                    modifier = modifier
+                )
+                Text("Brightness: ${brightness.toInt()}")
+            }
+        }
+
+        @Composable
+        fun GlyphButton(modifier: Modifier = Modifier) {
+            Button(
+                onClick = {
+                    flag = !flag
+                    glyphOn = flag
+                    if (glyphOn) {
+                        led.setBrightness(brightness.toInt())
+                    } else {
+                        led.setBrightness(0)
+                    }
+                    Log.d("GlyphTorch", "Button clicked $flag")
+                },
+                shape = RoundedCornerShape(10),
+                modifier = modifier
+            ) {
+                Icon(
+                    painter = rememberVectorPainter(
+                        image = if (flag) {
+                            Icons.Default.Check
+                        } else {
+                            Icons.Default.Clear
+                        }
+                    ),
+                    contentDescription = "Torch Status",
+                    Modifier.size(40.dp)
+                )
+                Text(
+                    text = "Glyph",
+                    fontSize = 40.sp
+                )
+            }
+        }
+
+        @Composable
+        fun GlyphImage(modifier: Modifier = Modifier) {
+            Image(
+                painter = painterResource(
+                    id = if (flag) {
+                        R.drawable.glyphs_on
+                    } else {
+                        R.drawable.glyphs_off
+                    }
+                ),
+                contentDescription = "Glyph Preview",
+                modifier = modifier
+            )
+        }
+
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
@@ -145,81 +221,40 @@ class MainActivity : ComponentActivity() {
                 )
             },
             content = {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(it),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(32.dp)
-                ) {
-                    // Brightness Slider
-                    Column (
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Slider(
-                            value = sliderValue,
-                            valueRange = 0f..255f,
-                            onValueChange = {
-                                sliderValue = it
-                                brightness = it
-                                if (glyphOn) {
-                                    led.setBrightness(brightness.toInt())
-                                }
-                            },
-                            onValueChangeFinished = {
-                                Log.d("GlyphTorch", "Slider changed $brightness")
-                            },
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
-                        Text("Brightness: ${brightness.toInt()}")
-                    }
-
-                    // Glyph Button
-                    Button(
-                        onClick = {
-                            flag = !flag
-                            glyphOn = flag
-                            if (glyphOn) {
-                                led.setBrightness(brightness.toInt())
-                            } else {
-                                led.setBrightness(0)
+                val configuration = LocalConfiguration.current
+                when (configuration.orientation) {
+                    android.content.res.Configuration.ORIENTATION_LANDSCAPE -> {
+                        Row(
+                            modifier = Modifier.padding(it),
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
+                                modifier = Modifier.weight(2f)
+                            ) {
+                                BrightnessSlider(Modifier.padding(16.dp))
+                                GlyphButton(buttonWidth)
+                                FlashLightButton(buttonWidth)
                             }
-                            Log.d("GlyphTorch", "Button clicked $flag")
-                        },
-                        shape = RoundedCornerShape(10),
-                        modifier = buttonWidth
-                    ) {
-                        Icon(
-                            painter = rememberVectorPainter(
-                                image = if (flag) {
-                                    Icons.Default.Check
-                                } else {
-                                    Icons.Default.Clear
-                                }
-                            ),
-                            contentDescription = "Torch Status",
-                            Modifier.size(40.dp)
-                        )
-                        Text(
-                            text = "Glyph",
-                            fontSize = 40.sp
-                        )
+
+                            GlyphImage(Modifier.weight(1f).padding(16.dp))
+                        }
                     }
-
-                    FlashLightButton(buttonWidth)
-
-                    // Glyph Image
-                    Image(
-                        painter = painterResource(
-                            id = if (flag) {
-                                R.drawable.glyphs_on
-                            } else {
-                                R.drawable.glyphs_off
-                            }
-                        ),
-                        contentDescription = "Glyph Preview",
-                        modifier = buttonWidth
-                    )
+                    // Portrait and unknown states
+                    else -> {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(it),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(32.dp)
+                        ) {
+                            BrightnessSlider(Modifier.padding(horizontal = 16.dp))
+                            GlyphButton(buttonWidth)
+                            FlashLightButton(buttonWidth)
+                            GlyphImage()
+                        }
+                    }
                 }
             }
         )
