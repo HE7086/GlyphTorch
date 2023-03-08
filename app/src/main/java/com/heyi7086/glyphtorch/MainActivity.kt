@@ -97,6 +97,14 @@ class MainActivity : ComponentActivity() {
         var showMenu by remember {
             mutableStateOf(false)
         }
+        var flag by remember {
+            mutableStateOf(glyphOn)
+        }
+        var sliderValue by remember {
+            mutableStateOf(brightness)
+        }
+
+        val buttonWidth = Modifier.width(300.dp)
 
         Scaffold(
             topBar = {
@@ -144,88 +152,76 @@ class MainActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(32.dp)
                 ) {
-                    BrightnessSlider(Modifier.padding(horizontal = 16.dp))
-                    FlashLightButton(Modifier.width(300.dp))
-                    ActivateButton(Modifier.width(300.dp))
+                    // Brightness Slider
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Slider(
+                            value = sliderValue,
+                            valueRange = 0f..255f,
+                            onValueChange = {
+                                sliderValue = it
+                                brightness = it
+                                if (glyphOn) {
+                                    led.setBrightness(brightness.toInt())
+                                }
+                            },
+                            onValueChangeFinished = {
+                                Log.d("GlyphTorch", "Slider changed $brightness")
+                            },
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                        Text("Brightness: ${brightness.toInt()}")
+                    }
+
+                    // Glyph Button
+                    Button(
+                        onClick = {
+                            flag = !flag
+                            glyphOn = flag
+                            if (glyphOn) {
+                                led.setBrightness(brightness.toInt())
+                            } else {
+                                led.setBrightness(0)
+                            }
+                            Log.d("GlyphTorch", "Button clicked $flag")
+                        },
+                        shape = RoundedCornerShape(10),
+                        modifier = buttonWidth
+                    ) {
+                        Icon(
+                            painter = rememberVectorPainter(
+                                image = if (flag) {
+                                    Icons.Default.Check
+                                } else {
+                                    Icons.Default.Clear
+                                }
+                            ),
+                            contentDescription = "Torch Status",
+                            Modifier.size(40.dp)
+                        )
+                        Text(
+                            text = "Glyph",
+                            fontSize = 40.sp
+                        )
+                    }
+
+                    FlashLightButton(buttonWidth)
+
+                    // Glyph Image
+                    Image(
+                        painter = painterResource(
+                            id = if (flag) {
+                                R.drawable.glyphs_on
+                            } else {
+                                R.drawable.glyphs_off
+                            }
+                        ),
+                        contentDescription = "Glyph Preview",
+                        modifier = buttonWidth
+                    )
                 }
             }
-        )
-    }
-    
-    @Composable
-    fun BrightnessSlider(modifier: Modifier = Modifier) {
-        var sliderValue by remember {
-            mutableStateOf(brightness)
-        }
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Slider(
-                value = sliderValue,
-                valueRange = 0f..255f,
-                onValueChange = {
-                    sliderValue = it
-                    brightness = it
-                    if (glyphOn) {
-                        led.setBrightness(brightness.toInt())
-                    }
-                },
-                onValueChangeFinished = {
-                    Log.d("GlyphTorch", "Slider changed $brightness")
-                },
-                modifier = modifier
-            )
-            Text("Brightness: ${brightness.toInt()}")
-        }
-    }
-
-    @Composable
-    fun ActivateButton(modifier: Modifier = Modifier) {
-        var flag by remember {
-            mutableStateOf(glyphOn)
-        }
-
-        Button(
-            onClick = {
-                flag = !flag
-                glyphOn = flag
-                if (glyphOn) {
-                    led.setBrightness(brightness.toInt())
-                } else {
-                    led.setBrightness(0)
-                }
-                Log.d("GlyphTorch", "Button clicked $flag")
-            },
-            shape = RoundedCornerShape(10),
-            modifier = modifier
-        ) {
-            Icon(
-                painter = rememberVectorPainter(
-                    image = if (flag) {
-                        Icons.Default.Check
-                    } else {
-                        Icons.Default.Clear
-                    }
-                ),
-                contentDescription = "Torch Status",
-                Modifier.size(40.dp)
-            )
-            Text(
-                text = "Glyph",
-                fontSize = 40.sp
-            )
-        }
-
-        Image(
-            painter = painterResource(
-                id = if (flag) {
-                    R.drawable.glyphs_on
-                } else {
-                    R.drawable.glyphs_off
-                }
-            ),
-            contentDescription = "Glyph Preview",
-            modifier = modifier,
         )
     }
 
