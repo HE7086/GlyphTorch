@@ -66,6 +66,14 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        if (Shell.getCachedShell() == null || !Shell.getCachedShell()!!.isRoot) {
+            Toast.makeText(
+                this,
+                "Root access denied, check your device",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
         val brand = android.os.Build.BRAND
         val model = android.os.Build.MODEL
         // are there any other models?
