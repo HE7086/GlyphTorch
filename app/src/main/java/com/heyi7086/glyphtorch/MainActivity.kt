@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -135,8 +137,8 @@ class MainActivity : ComponentActivity() {
                     verticalArrangement = Arrangement.spacedBy(32.dp)
                 ) {
                     BrightnessSlider(Modifier.padding(horizontal = 16.dp))
-                    ActivateButton(Modifier.width(300.dp))
                     FlashLightButton(Modifier.width(300.dp))
+                    ActivateButton(Modifier.width(300.dp))
                 }
             }
         )
@@ -205,6 +207,18 @@ class MainActivity : ComponentActivity() {
                 fontSize = 40.sp
             )
         }
+
+        Image(
+            painter = painterResource(
+                id = if (flag) {
+                    R.drawable.glyphs_on
+                } else {
+                    R.drawable.glyphs_off
+                }
+            ),
+            contentDescription = "Glyph Preview",
+            modifier = modifier,
+        )
     }
 
     @Composable
