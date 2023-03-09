@@ -23,8 +23,19 @@ const val DOT = "dot_led_br"
 
 object LedManager {
     init {
-        Shell.getShell()
-        Shell.cmd("echo 4095 > $BASE/$BRIGHT1").exec()
+        initialize()
+    }
+
+    fun initialize(): Boolean {
+        Shell.enableVerboseLogging = BuildConfig.DEBUG
+        val shell = Shell.getShell()
+
+        return if (shell.isRoot) {
+            Shell.cmd("echo 4095 > $BASE/$BRIGHT1").exec()
+            true
+        } else {
+            false
+        }
     }
 
     fun setBrightness(value: Int) {

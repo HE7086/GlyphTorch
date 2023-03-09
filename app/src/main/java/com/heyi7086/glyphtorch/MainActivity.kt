@@ -13,9 +13,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -53,11 +51,9 @@ import com.topjohnwu.superuser.Shell
 class MainActivity : ComponentActivity() {
 
     init {
-        Shell.enableVerboseLogging = BuildConfig.DEBUG
-        Shell.getShell()
+        LedManager.initialize()
     }
 
-    private val led = LedManager
     private var glyphOn = false
     private var brightness = 255f
 
@@ -89,9 +85,20 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!LedManager.initialize()) {
+            Toast.makeText(
+                this,
+                "Root access denied, check your device",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        led.setBrightness(0)
+        LedManager.setBrightness(0)
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -121,7 +128,7 @@ class MainActivity : ComponentActivity() {
                         sliderValue = it
                         brightness = it
                         if (glyphOn) {
-                            led.setBrightness(brightness.toInt())
+                            LedManager.setBrightness(brightness.toInt())
                         }
                     },
                     onValueChangeFinished = {
@@ -140,9 +147,9 @@ class MainActivity : ComponentActivity() {
                     flag = !flag
                     glyphOn = flag
                     if (glyphOn) {
-                        led.setBrightness(brightness.toInt())
+                        LedManager.setBrightness(brightness.toInt())
                     } else {
-                        led.setBrightness(0)
+                        LedManager.setBrightness(0)
                     }
                     Log.d("GlyphTorch", "Button clicked $flag")
                 },
@@ -237,7 +244,11 @@ class MainActivity : ComponentActivity() {
                                 FlashLightButton(buttonWidth)
                             }
 
-                            GlyphImage(Modifier.weight(1f).padding(16.dp))
+                            GlyphImage(
+                                Modifier
+                                    .weight(1f)
+                                    .padding(16.dp)
+                            )
                         }
                     }
                     // Portrait and unknown states
@@ -262,39 +273,41 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun FlashLightButton(modifier: Modifier = Modifier) {
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
-            var flag by remember {
-                mutableStateOf(false)
-            }
-            Button(
-                modifier = modifier,
-                onClick = {
-                    flag = !flag
-                    getSystemService(Context.CAMERA_SERVICE)?.let {
-                        val cameraManager = it as CameraManager
-                        val cameraId = cameraManager.cameraIdList[0]
-                        cameraManager.setTorchMode(cameraId, flag)
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+            return
+        }
+
+        var flag by remember {
+            mutableStateOf(false)
+        }
+        Button(
+            modifier = modifier,
+            onClick = {
+                flag = !flag
+                getSystemService(Context.CAMERA_SERVICE)?.let {
+                    val cameraManager = it as CameraManager
+                    val cameraId = cameraManager.cameraIdList[0]
+                    cameraManager.setTorchMode(cameraId, flag)
+                }
+                Log.d("GlyphTorch", "Flashlight clicked $flag")
+            },
+            shape = RoundedCornerShape(10),
+        ) {
+            Icon(
+                painter = rememberVectorPainter(
+                    image = if (flag) {
+                        Icons.Default.Check
+                    } else {
+                        Icons.Default.Clear
                     }
-                    Log.d("GlyphTorch", "Flashlight clicked $flag")
-                },
-                shape = RoundedCornerShape(10),
-            ) {
-                Icon(
-                    painter = rememberVectorPainter(
-                        image = if (flag) {
-                            Icons.Default.Check
-                        } else {
-                            Icons.Default.Clear
-                        }
-                    ),
-                    contentDescription = "Flashlight Status",
-                    Modifier.size(40.dp)
-                )
-                Text(
-                    text = "Flashlight",
-                    fontSize = 40.sp
-                )
-            }
+                ),
+                contentDescription = "Flashlight Status",
+                Modifier.size(40.dp)
+            )
+            Text(
+                text = "Flashlight",
+                fontSize = 40.sp
+            )
         }
     }
 }
