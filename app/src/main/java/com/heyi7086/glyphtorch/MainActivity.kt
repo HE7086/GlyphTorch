@@ -218,10 +218,10 @@ class MainActivity : ComponentActivity() {
                                             contentDescription = "",
                                         )
                                         Spacer(Modifier.size(8.dp))
-                                        Text("Test")
+                                        Text("Reset")
                                     }
                                 },
-                                onClick = { /*TODO*/ }
+                                onClick = { LedManager.reset() }
                             )
                         }
                     }

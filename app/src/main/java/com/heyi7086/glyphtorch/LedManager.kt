@@ -6,6 +6,8 @@ const val BASE = "/sys/devices/platform/soc/984000.i2c/i2c-0/0-0020/leds/aw210xx
 const val BRIGHT1 = "all_white_leds_br"
 const val BRIGHT2 = "glo_current"
 
+const val SWITCH = "all_leds_effect"
+
 // top left led around the camera
 const val REAR_CAM = "rear_cam_led_br"
 
@@ -56,5 +58,11 @@ object LedManager {
             setBrightness(0)
             false
         }
+    }
+
+    fun reset() {
+        Shell.cmd("echo 4095 > $BASE/$BRIGHT1").exec()
+        Shell.cmd("echo 255 > $BASE/$BRIGHT2").exec()
+        Shell.cmd("echo 0 > $BASE/$SWITCH").exec()
     }
 }
