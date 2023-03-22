@@ -32,27 +32,22 @@ object LedManager {
         Shell.enableVerboseLogging = BuildConfig.DEBUG
         val shell = Shell.getShell()
 
-        return if (shell.isRoot) {
-            Shell.cmd("echo 4095 > $BASE/$BRIGHT1").exec()
-            true
-        } else {
-            false
-        }
+        return shell.isRoot
     }
 
     fun setBrightness(value: Int) {
-        Shell.cmd("echo $value > $BASE/$BRIGHT2").exec()
+        Shell.cmd("echo $value > $BASE/$BRIGHT1").exec()
     }
 
     fun getBrightness(): Int {
-        val result = Shell.cmd("cat $BASE/$BRIGHT2").exec()
+        val result = Shell.cmd("cat $BASE/$BRIGHT1").exec()
         return result.out.last().toInt()
     }
 
     fun toggle(): Boolean {
         val brightness = getBrightness()
         return if (brightness == 0) {
-            setBrightness(255)
+            setBrightness(4095)
             true
         } else {
             setBrightness(0)

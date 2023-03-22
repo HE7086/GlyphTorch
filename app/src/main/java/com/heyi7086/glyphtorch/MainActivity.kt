@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private var glyphOn = false
-    private var brightness = 255f
+    private var brightness = 4095f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,7 +123,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 Slider(
                     value = sliderValue,
-                    valueRange = 0f..255f,
+                    valueRange = 0f..4095f,
                     onValueChange = {
                         sliderValue = it
                         brightness = it
