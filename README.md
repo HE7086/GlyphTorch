@@ -14,4 +14,5 @@ As this is in very early stage, expect there to be crashes and bugs.
     <img src="assets/shortcut.png" width="30%">
 </p>
 
-
+## Note for Nothing OS 2.0
+Since Nothing OS 2.0 a functionality is added where long press the flashlight toggle in control center enables glyph as flashlight. However this does not work for homescreen and lockscreen shortcuts (yet).
